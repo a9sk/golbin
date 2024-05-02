@@ -35,7 +35,7 @@ nmap_installer(){
         echo "[!] Quitting... "
         exit
     else
-        echo "[*] Nmap installed"
+        echo "[*] Nmap is present"
     fi
 }
 
@@ -62,12 +62,12 @@ seclist_installer(){
 
     if [ -d "SecLists-master" ]
     then
+        echo "[*] SecList is present"
+    else  
         echo "[!] There was a problem with the SecList installation."
         sleep 1
         echo "[!] Quitting... "
         exit
-    else
-        echo "[*] SecList installed"
     fi
 }
 
@@ -104,7 +104,7 @@ gobuster_installer(){
         echo "[!] Quitting... "
         exit
     else
-        echo "[*] Gobuster installed"
+        echo "[*] Gobuster is present"
     fi
 }
 
