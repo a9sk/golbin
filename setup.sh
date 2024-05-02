@@ -29,7 +29,7 @@ chmod +x "$GOLBIN_PATH" || {
     echo "[!] Exiting..."
     exit 1
 }
-
+sleep 1
 echo "[*] Creating an alias for the golbin.sh script"
 alias golbin="$GOLBIN_PATH" >> ~/.bashrc  || {
     echo "[!] Impossible to create the alias"
@@ -38,13 +38,19 @@ alias golbin="$GOLBIN_PATH" >> ~/.bashrc  || {
     echo "[!] Exiting..."
     exit 1
 }
-
-# Crea un collegamento simbolico per golbin.sh
+sleep 1
+echo "[*] Alias created with success"
+sleep 1
 echo "[*] Creating a symlink for the golbin.sh script"
-ln -s "$GOLBIN_PATH" "$SCRIPT_SAVE" || {
+sudo ln -s "$GOLBIN_PATH" "$SCRIPT_SAVE" || {
     echo "[!] Impossible to create the symlink"
     echo '[!] In case of any problem contact @a9sk at 920a9sk765@proton.me'
     sleep 1
     echo "[!] Exiting..."
     exit 1
 }
+sleep 1
+echo "[*] Symlink created with success"
+sleep 1
+echo '[*] Try running the golbin command'
+echo '[!] In case of any problem contact @a9sk at 920a9sk765@proton.me'
