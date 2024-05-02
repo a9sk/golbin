@@ -7,21 +7,21 @@ Golbin is a command line tool for the 360 degrees scan of a service
 To install Golbin, follow this steps:
 
 1. Clone this repository on your linux (Debian based) machine: 
-   \```bash
+   ```bash
    git clone https://github.com/a9sk/golbin
-   \```
+   ```
 2. Change directory into this one:
-   \```bash
+   ```bash
    cd golbin
-   \```
+   ```
 3. Run the setup.sh script:
-   \```bash
+   ```bash
    bash setup.sh
-   \```
+   ```
 4. To start the tool enter the following command in the command line:
-   \```bash
+   ```bash
    golbin
-   \```
+   ```
 
 ## Licence
 
