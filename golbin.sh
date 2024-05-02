@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# install nmap if not already present
 nmap_installer(){
     if ! command -v nmap &> /dev/null
     then
@@ -28,6 +27,16 @@ nmap_installer(){
 			esac
 		fi
     fi
+
+    if ! command -v nmap &> /dev/null
+    then 
+        echo "[!] There was a problem with the nmap installation."
+        sleep 1
+        echo "[!] Quitting... "
+        exit
+    else
+        echo "[*] Nmap installed"
+    fi
 }
 
 seclist_installer(){
@@ -49,6 +58,16 @@ seclist_installer(){
 				n|N|no|No|NO)		echo "[*] SecList is needed" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
 			esac
 		fi
+    fi
+
+    if [ -d "SecLists-master" ]
+    then
+        echo "[!] There was a problem with the SecList installation."
+        sleep 1
+        echo "[!] Quitting... "
+        exit
+    else
+        echo "[*] SecList installed"
     fi
 }
 
@@ -76,6 +95,16 @@ gobuster_installer(){
 				n|N|no|No|NO)		echo "[!] Might have some problems with old Gobuster versions" ; sleep 1; echo "[*] Moving on then" ; sleep 1;;
 			esac
 		fi
+    fi
+
+    if ! command -v gobuster &> /dev/null
+    then 
+        echo "[!] There was a problem with the Gobuster installation."
+        sleep 1
+        echo "[!] Quitting... "
+        exit
+    else
+        echo "[*] Gobuster installed"
     fi
 }
 
