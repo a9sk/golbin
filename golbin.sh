@@ -52,6 +52,33 @@ seclist_installer(){
     fi
 }
 
+gobuster_installer(){
+    if ! command -v gobuster &> /dev/null
+    then
+        read -p "$(echo -e '[?] Gobuster not installed, do you want to install it? (Might take a few minutes)'$i' (y/n) ')" ok
+		if [[ $ok == "" ]]
+		then
+			sudo apt-get install gobuster
+		else
+			case $ok in
+				y|Y|yes|Yes|YES)    echo '[*] Installing Gobuster, might take some time'; sudo apt-get install gobuster ;;
+				n|N|no|No|NO)		echo "[*] Gobuster is needed" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
+			esac
+		fi  
+    else
+        read -p "$(echo -e '[?] Gobuster is installed, do you want to update it?'$i' (y/n) ')" up
+		if [[ $up == "" ]]
+		then
+            sudo apt install gobuster
+		else
+			case $up in
+				y|Y|yes|Yes|YES)	sudo apt-get update; sudo apt install gobuster;;
+				n|N|no|No|NO)		echo "[!] Might have some problems with old Gobuster versions" ; sleep 1; echo "[*] Moving on then" ; sleep 1;;
+			esac
+		fi
+    fi
+}
+
 main() {
     clear
     sleep 1
@@ -75,6 +102,8 @@ main() {
     nmap_installer
     sleep 1
     seclist_installer
+    sleep 1
+    gobuster_installer
 
 }
 
