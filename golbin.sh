@@ -1,5 +1,36 @@
 #!/bin/bash
 
+banner(){
+    sleep 0.1
+    echo "                                                    ,      ,         ";
+    sleep 0.1
+    echo "                                                   /(.-\"\"-.)\        ";
+    sleep 0.1
+    echo "                                               |\  \/      \/  /|    ";
+    sleep 0.1
+    echo "                .__ ___.   .__                 | \ / =.  .= \ / |    ";
+    sleep 0.1
+    echo "    ____   ____ |  |\_ |__ |__| ____           \( \   o\/o   / )/    ";
+    sleep 0.1
+    echo "   / ___\ /  _ \|  | | __ \|  |/    \           \_, '-/  \-' ,_/     ";
+    sleep 0.1
+    echo "  / /_/  >  <_> )  |_| \_\ \  |   |  \            /   \__/   \       ";
+    sleep 0.1
+    echo "  \___  / \____/|____/___  /__|___|  /            \ \__/\__/ /       ";
+    sleep 0.1
+    echo " /_____/                 \/        \/           ___\ \|--|/ /___     ";
+    sleep 0.1
+    echo -e "                                              /\`    \\      /    \`\   ";
+    sleep 0.1
+    echo "                                             /       '----'       \  ";
+    sleep 0.3
+    echo "      "
+    echo "      "
+    echo "    Golbin v1.0.0 @a9sk"
+    echo "      "
+    echo "      "
+    sleep 1
+}
 nmap_installer(){
     if ! command -v nmap &> /dev/null
     then
@@ -110,29 +141,23 @@ gobuster_installer(){
 
 main() {
     clear
-    sleep 1
-    echo "                                                    ,      ,         ";
-    echo "                                                   /(.-\"\"-.)\        ";
-    echo "                                               |\  \/      \/  /|    ";
-    echo "                .__ ___.   .__                 | \ / =.  .= \ / |    ";
-    echo "    ____   ____ |  |\_ |__ |__| ____           \( \   o\/o   / )/    ";
-    echo "   / ___\ /  _ \|  | | __ \|  |/    \           \_, '-/  \-' ,_/     ";
-    echo "  / /_/  >  <_> )  |_| \_\ \  |   |  \            /   \__/   \       ";
-    echo "  \___  / \____/|____/___  /__|___|  /            \ \__/\__/ /       ";
-    echo " /_____/                 \/        \/           ___\ \|--|/ /___     ";
-    echo -e "                                              /\`    \\      /    \`\   ";
-    echo "                                             /       '----'       \  ";
-    echo "      "
-    echo "      "
-    echo "    Golbin v1.0.0 @a9sk"
-    echo "      "
-    echo "      "
-    sleep 1
-    nmap_installer
-    sleep 1
-    seclist_installer
-    sleep 1
-    gobuster_installer
+    banner
+    if command -v nmap &> /dev/null && [ -d "SecLists-master" ] && command -v gobuster &> /dev/null
+    then
+        echo " "
+        echo '[*] Ok, lets start, enter help (h) to see what actions you can perform'
+        echo " "
+    else
+        echo " "
+        echo "[!] Looks like you are missing something, lets check"
+        sleep 1
+        nmap_installer
+        sleep 1
+        seclist_installer
+        sleep 1
+        gobuster_installer
+    fi
+    
 
 }
 
