@@ -71,7 +71,9 @@ nmap_installer(){
     fi
 }
 seclist_installer(){
-    if [ -d "SecLists-master" ]
+    SCRIPT_PATH="$(dirname "$(realpath "$0")")"
+    pwd
+    if [ -d "$SCRIPT_PATH/SecLists-master" ]
     then
         echo '[!] SecList already installed'
         sleep 1
@@ -81,18 +83,18 @@ seclist_installer(){
 		if [[ $ok == "" ]]
 		then
 			wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip
-            unzip SecList.zip
-            rm -f SecList.zip
+            unzip "$SCRIPT_PATH/SecList.zip" -d "$SCRIPT_PATH"
+            rm -f "$SCRIPT_PATH/SecList.zip"
 		else
 			case $ok in
-				y|Y|yes|Yes|YES)    wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip; echo '[*] Install unzip to continue'; sudo apt install unzip; echo '[*] Unzipping the whole SecList.zip (might take a few minutes)'; unzip SecList.zip; rm -f SecList.zip ;;
+				y|Y|yes|Yes|YES)    wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip; echo '[*] Install unzip to continue'; sudo apt install unzip; echo '[*] Unzipping the whole SecList.zip (might take a few minutes)'; unzip "$SCRIPT_PATH/SecList.zip"  -d "$SCRIPT_PATH"; rm -f "$SCRIPT_PATH/SecList.zip" ;;
 				n|N|no|No|NO)		echo "[*] SecList is needed" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
                 *)                  echo "[*] Invalid input entered" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
 			esac
 		fi
     fi
 
-    if [ -d "SecLists-master" ]
+    if [ -d "$SCRIPT_PATH/SecLists-master" ]
     then
         echo "[*] SecList is present"
     else  
@@ -160,7 +162,8 @@ help(){
 main() {
     clear
     banner
-    if command -v nmap &> /dev/null && [ -d "SecLists-master" ] && command -v gobuster &> /dev/null
+    SCRIPT_PATH="$(dirname "$(realpath "$0")")"
+    if command -v nmap &> /dev/null && [ -d "$SCRIPT_PATH/SecLists-master" ] && command -v gobuster &> /dev/null
     then
         echo " "
         echo '[*] Ok, lets start, enter help (h) to see what actions you can perform'
