@@ -140,6 +140,23 @@ gobuster_installer(){
     fi
 }
 
+help(){
+    sleep 0.1
+    echo " ";
+    echo "Golbin 1.0.0 (Git v1.0.0 packaged as 1.0.0-1)                            ";
+    echo "@a9sk                                                                    ";
+    echo "See https://github.com/a9sk/golbin for more information.                 ";
+    echo "                                                                         ";
+    echo "Usage: golbin                                                            ";
+    echo "                                                                         ";
+    echo "                                                                         ";
+    echo "Miscellaneous:                                                           ";
+    echo "        h, help                 display this help and ask for new input  ";
+    echo "        e, exit                 exit from the program                    ";
+    echo " ";
+    sleep 0.1
+}
+
 main() {
     clear
     banner
@@ -159,7 +176,16 @@ main() {
         gobuster_installer
     fi
     
-
+    while true; do
+        sleep 0.1
+        read -p "</> " input
+        case $input in
+            help|h|-h|--help|H|HELP|-H|--HELP) help ;;
+            exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) exit ;;
+            *)      echo " "; echo "[!] Invalid command entered, enter help to see valid inputs." ;;
+        esac
+        sleep 0.1
+    done
 }
 
 main
