@@ -43,6 +43,7 @@ nmap_installer(){
 			case $ok in
 				y|Y|yes|Yes|YES)	sudo apt-get update; sudo apt-get install nmap;;
 				n|N|no|No|NO)		echo "[*] Nmap is needed" ; echo "[!] Exiting" ; exit ;;
+                *)                  echo "[*] Invalid input" ; echo "[!] Exiting" ; exit ;;
 			esac
 		fi
     else
@@ -54,7 +55,7 @@ nmap_installer(){
 		else
 			case $up in
 				y|Y|yes|Yes|YES)	sudo apt-get update; sudo apt-get upgrade nmap;;
-				n|N|no|No|NO)		echo "[!] Might have some problems with old nmap versions" ; sleep 1; echo "[*] Moving on then" ; sleep 1;;
+				n|N|no|No|NO|*)		echo "[!] Might have some problems with old nmap versions" ; sleep 1; echo "[*] Moving on then" ; sleep 1;;
 			esac
 		fi
     fi
@@ -69,7 +70,6 @@ nmap_installer(){
         echo "[*] Nmap is present"
     fi
 }
-
 seclist_installer(){
     if [ -d "SecLists-master" ]
     then
@@ -87,6 +87,7 @@ seclist_installer(){
 			case $ok in
 				y|Y|yes|Yes|YES)    wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip; echo '[*] Install unzip to continue'; sudo apt install unzip; echo '[*] Unzipping the whole SecList.zip (might take a few minutes)'; unzip SecList.zip; rm -f SecList.zip ;;
 				n|N|no|No|NO)		echo "[*] SecList is needed" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
+                *)                  echo "[*] Invalid input entered" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
 			esac
 		fi
     fi
@@ -101,7 +102,6 @@ seclist_installer(){
         exit
     fi
 }
-
 gobuster_installer(){
     if ! command -v gobuster &> /dev/null
     then
@@ -113,6 +113,7 @@ gobuster_installer(){
 			case $ok in
 				y|Y|yes|Yes|YES)    echo '[*] Installing Gobuster, might take some time'; sudo apt-get install gobuster ;;
 				n|N|no|No|NO)		echo "[*] Gobuster is needed" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
+                *)                  echo "[*] Invalid input entered" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
 			esac
 		fi  
     else
@@ -123,7 +124,7 @@ gobuster_installer(){
 		else
 			case $up in
 				y|Y|yes|Yes|YES)	sudo apt-get update; sudo apt install gobuster;;
-				n|N|no|No|NO)		echo "[!] Might have some problems with old Gobuster versions" ; sleep 1; echo "[*] Moving on then" ; sleep 1;;
+				n|N|no|No|NO|*)		echo "[!] Might have some problems with old Gobuster versions" ; sleep 1; echo "[*] Moving on then" ; sleep 1;;
 			esac
 		fi
     fi
