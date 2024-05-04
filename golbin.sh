@@ -72,7 +72,7 @@ nmap_installer(){
 }
 seclist_installer(){
     SCRIPT_PATH="$(dirname "$(realpath "$0")")"
-    pwd
+
     if [ -d "$SCRIPT_PATH/SecLists-master" ]
     then
         echo '[!] SecList already installed'
@@ -141,7 +141,6 @@ gobuster_installer(){
         echo "[*] Gobuster is present"
     fi
 }
-
 help(){
     sleep 0.1
     echo " ";
@@ -152,11 +151,61 @@ help(){
     echo "Usage: golbin                                                            ";
     echo "                                                                         ";
     echo "                                                                         ";
+    echo "DNS Subdomain Enumeration:                                               ";
+    echo "        g, gobuster             starts a shell where you can provide info about how you want the scan to be  ";
+    echo "        e, exit                 exit from gobuster shell                                                     ";
+    echo "                                                                         ";
     echo "Miscellaneous:                                                           ";
     echo "        h, help                 display this help and ask for new input  ";
     echo "        e, exit                 exit from the program                    ";
     echo " ";
     sleep 0.1
+}
+gobuster_starter(){
+    echo '[*] Gobuster is a powerfull tool, use with caution'; echo " ";
+    echo "[*] Answer a couple questions to bild your command, at any point enter 'e' to exit"; sleep 0.5; echo " ";
+    while true
+    do
+        read -p "$(echo -e '[*] Enter how detailed you want the scan to be, keep in mind more detailed = longer'$i' (1-3) ')" NSUB
+        case $NSUB in
+            1) WORDLIST="SecLists-master/Discovery/DNS/subdomains-top1million-5000.txt"; break;;
+            2) WORDLIST="SecLists-master/Discovery/DNS/subdomains-top1million-20000.txt"; break;;
+            3) WORDLIST="SecLists-master/Discovery/DNS/subdomains-top1million-110000.txt"; break;;
+            exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) echo "[*] e entered" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
+            *)      echo " "; echo "[!] Invalid command entered, enter value from 1 to 3." ;;
+        esac
+    done
+    echo " "
+
+    OUTPUT=$(gobuster dns -d "$DOMAIN" -w "$WORDLIST" -q | tee /dev/tty | grep -oP '(?<=Found: ).*')
+    echo " "
+    if [ -z "$OUTPUT" ]
+    then
+        echo "[!] No subdomain found, might be using a Shared Hosting service"
+    fi
+    OUTPUT="$OUTPUT $DOMAIN"
+
+    while read -r d; do
+        DOMAINS+=("$d")
+    done <<< "$OUTPUT"
+    echo " "
+    sleep 0.1
+    echo "[*] Going back to the shell, saved all the subdomains"
+    shell
+}
+shell(){
+    while true
+    do
+        sleep 0.1
+        read -p "</> " input
+        case $input in
+            help|h|-h|--help|H|HELP|-H|--HELP) help ;;
+            exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) exit ;;
+            gobuster|g|-g|--go|go|G|GOBUSTER|Go|GO|--GO) gobuster_starter ;;
+            *)      echo " "; echo "[!] Invalid command entered, enter help to see valid inputs." ;;
+        esac
+        sleep 0.1
+    done
 }
 
 main() {
@@ -178,17 +227,25 @@ main() {
         sleep 1
         gobuster_installer
     fi
-    
-    while true; do
-        sleep 0.1
-        read -p "</> " input
-        case $input in
-            help|h|-h|--help|H|HELP|-H|--HELP) help ;;
-            exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) exit ;;
-            *)      echo " "; echo "[!] Invalid command entered, enter help to see valid inputs." ;;
-        esac
-        sleep 0.1
+    while true
+    do
+        read -p "$(echo -e '[*] Enter the domain you want to scan'$i' (example.com) ')" DOMAIN        
+        if [ "$DOMAIN" = 'e' ]
+        then
+            echo "[*] e entered" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit
+        fi
+        if whois "$DOMAIN" &> /dev/null
+        then
+            break
+        else 
+            echo "[!] Domain does not exist or is offline, please enter a different domain"; echo " ";
+        fi
     done
+    sleep 0.5
+    echo " "
+    shell 
 }
 
+declare -g DOMAIN
+declare -a DOMAINS=()
 main
