@@ -152,8 +152,10 @@ help(){
     echo "                                                                         ";
     echo "                                                                         ";
     echo "DNS Subdomain Enumeration:                                               ";
-    echo "        g, gobuster             starts a shell where you can provide info about how you want the scan to be  ";
-    echo "        e, exit                 exit from gobuster shell                                                     ";
+    echo "        g, gobuster             slowest subdomain scan possible          ";
+    echo "                                                                         ";
+    echo "Opened Ports Enumeration:                                               ";
+    echo "        n, nmap                 select a domain from the ones you found and look for open ports";
     echo "                                                                         ";
     echo "Miscellaneous:                                                           ";
     echo "        h, help                 display this help and ask for new input  ";
@@ -161,18 +163,18 @@ help(){
     echo " ";
     sleep 0.1
 }
-gobuster_starter(){
-    echo '[*] Gobuster is a powerfull tool, use with caution'; echo " ";
-    echo "[*] Answer a couple questions to bild your command, at any point enter 'e' to exit"; sleep 0.5; echo " ";
+gobuster_dns(){
+    echo '</gobuster> Gobuster is a powerfull tool, use with caution'; echo " ";
+    echo " "
     while true
     do
-        read -p "$(echo -e '[*] Enter how detailed you want the scan to be, keep in mind more detailed = longer'$i' (1-3) ')" NSUB
+        read -p "$(echo -e '</gobuster> Enter how detailed you want the scan to be, keep in mind more detailed = longer'$i' (1-3) ')" NSUB
         case $NSUB in
             1) WORDLIST="SecLists-master/Discovery/DNS/subdomains-top1million-5000.txt"; break;;
             2) WORDLIST="SecLists-master/Discovery/DNS/subdomains-top1million-20000.txt"; break;;
             3) WORDLIST="SecLists-master/Discovery/DNS/subdomains-top1million-110000.txt"; break;;
-            exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) echo "[*] e entered" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
-            *)      echo " "; echo "[!] Invalid command entered, enter value from 1 to 3." ;;
+            exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) echo "</gobuster> e entered" ; sleep 1; echo "</gobuster> Exiting" ; sleep 1; exit ;;
+            *)      echo " "; echo "</gobuster> Invalid command entered, enter value from 1 to 3." ;;
         esac
     done
     echo " "
@@ -181,18 +183,58 @@ gobuster_starter(){
     echo " "
     if [ -z "$OUTPUT" ]
     then
-        echo "[!] No subdomain found, might be using a Shared Hosting service"
+        echo "</gobuster> No subdomain found, might be using a Shared Hosting service"
     fi
-    OUTPUT="$OUTPUT $DOMAIN"
 
     while read -r d; do
         DOMAINS+=("$d")
     done <<< "$OUTPUT"
+
     echo " "
     sleep 0.1
-    echo "[*] Going back to the shell, saved all the subdomains"
+    echo "</gobuster> Going back to the shell, saved all the subdomains"
     shell
 }
+nmap_port_scan(){
+    sleep 0.5
+    echo "</nmap> Nmap is a powerfull tool, use with caution"; sleep 0.2
+    echo " "
+    while true
+    do
+        echo "</nmap> The domains you have saved are: "
+        echo " " $(for ((i=0; i<${#DOMAINS[@]}; i++)); do echo -e "$((i+1))) ${DOMAINS[i]} \n"; sleep 0.1; done)
+        read -p "$(echo '</nmap> Chose one: ')" SDOM
+        if [[ $SDOM =~ ^[0-9]+$ ]] && ((SDOM >= 1 && SDOM <= ${#DOMAINS[@]}))
+        then
+            SUBDOIP=$(nslookup "${DOMAINS[$SDOM-1]}" | awk '/^Address: / { print $2 }' | sed -n '1p')
+            if [ -z "$SUBDOIP" ]
+            then
+                echo "</nmap> No ip can be found for that domain, can't find $sdomain: No answer"; sleep 0.2
+            else
+                echo "</nmap> The ip for the domain $sdomain is $SUBDOIP"
+                echo "</nmap> Starting a scan on $SUBDOIP"
+                PORTS=$(nmap -F $SUBDOIP | awk '/^[0-9]+\// {print $1}')
+                if [ -z "$PORTS" ]
+                then
+                    echo "</nmap> No open ports were found for that domain"; sleep 0.1;
+                else
+                    echo "</nmap> The opened ports for this domain are: "; echo "$PORTS"; sleep 0.1;
+                fi
+                read -p "$(echo '</nmap> Do you want to check any other domain? (y/n)')" checkAgain;
+                case $checkAgain in
+                        y|Y|yes|Yes|YES)    echo " "; sleep 0.2;;
+                        *)		echo "</nmap> Ok, going back to the main shell"; break;;
+                esac
+            fi
+        else  
+            case $SDOM in 
+                exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) echo "</nmap> e entered" ; sleep 1; echo "[!] Exiting" ; sleep 1; exit ;;
+                *) echo "</nmap> Invalid choice entered, chose again";;
+            esac
+        fi
+    done
+}
+
 shell(){
     while true
     do
@@ -201,7 +243,8 @@ shell(){
         case $input in
             help|h|-h|--help|H|HELP|-H|--HELP) help ;;
             exit|e|-e|--exit|E|EXIT|-E|--EXIT|ex) exit ;;
-            gobuster|g|-g|--go|go|G|GOBUSTER|Go|GO|--GO) gobuster_starter ;;
+            gobuster|g|-g|--go|go|G|GOBUSTER|Go|GO|--GO) gobuster_dns ;;
+            nmap|n|-n|--nmap|map|NMAP|--NMAP|N|-N|MAP) nmap_port_scan ;;
             *)      echo " "; echo "[!] Invalid command entered, enter help to see valid inputs." ;;
         esac
         sleep 0.1
@@ -241,6 +284,7 @@ main() {
             echo "[!] Domain does not exist or is offline, please enter a different domain"; echo " ";
         fi
     done
+    DOMAINS+=$DOMAIN
     sleep 0.5
     echo " "
     shell 
