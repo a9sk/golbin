@@ -1,6 +1,6 @@
 # Golbin
 
-Golbin is a command line tool for the 360 degrees scan of a service
+Golbin is a tool that performs an extremely slow and limited service scan, can enumerate subdomains and open service ports. I do not recommend its use.
 
 ## Installation
 
